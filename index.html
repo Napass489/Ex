@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>คอร์สสอนทำเว็บ - ตัวอย่างเว็บไซต์พร้อมใช้งาน</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --deep-purple: #4A355B;
+      --primary-purple: #B388EB;
+      --primary-purple-dark: #9575CD;
+      --soft-pink: #FCE4EC;
+      --soft-lavender: #F3E5F5;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: 'Prompt', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(145deg, #FFF8FB 0%, #FCE4EC 50%, #F3E5F5 100%);
+      min-height: 100vh;
+      color: #4A355B;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* =========================================================
+       VIEWPORT FRAME: Fullscreen Responsive on All Devices
+       ========================================================= */
+    .viewport-wrapper {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      margin: 0 auto;
+    }
+
+    /* Fullscreen on Mobile, iPad, and PC (No Phone Bezel Frame) */
+    .viewport-wrapper.mode-phone {
+      width: 100%;
+      max-width: 100%;
+      height: 100dvh;
+      max-height: 100dvh;
+      margin: 0;
+      background: #FFFBFD;
+      border-radius: 0;
+      border: none;
+      box-shadow: none;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Internal Scrollable Content Area */
+    .phone-scroll-area {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+      padding: 0 14px 20px 14px;
+    }
+
+    .phone-scroll-area::-webkit-scrollbar {
+      width: 5px;
+    }
+    .phone-scroll-area::-webkit-scrollbar-track {
+      background: #FFF5F9;
+    }
+    .phone-scroll-area::-webkit-scrollbar-thumb {
+      background: #E1BEE7;
+      border-radius: 9999px;
+    }
+
+    /* =========================================================
+       HERO BANNER (Soft Pastel Pink-Lavender)
+       ========================================================= */
+    .hero-card {
+      background: linear-gradient(135deg, #FFF0F6 0%, #FCE4EC 48%, #F3E5F5 100%);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      border: 1.5px solid #F8BBD0;
+      box-shadow: 0 4px 14px -4px rgba(179, 136, 235, 0.16);
+    }
+
+    .hero-blob-1 {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 70%);
+      top: -30px;
+      left: -25px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-blob-2 {
+      position: absolute;
+      width: 180px;
+      height: 95px;
+      background: rgba(255, 255, 255, 0.45);
+      bottom: -30px;
+      right: 8%;
+      border-radius: 100%;
+      transform: rotate(-8deg);
+      pointer-events: none;
+    }
+
+    /* =========================================================
+       HORIZONTAL CATEGORY TABS (Single-line, No Overflow/Spill)
+       ========================================================= */
+    .tabs-scroll-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      padding: 2px 2px 4px 2px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .tabs-scroll-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .cat-pill {
+      flex: 0 0 auto;
+      transition: all 0.2s ease;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 12px;
+      line-height: 1;
+      padding: 8px 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .cat-pill.active {
+      background: linear-gradient(135deg, #B388EB 0%, #F48FB1 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 11px -2px rgba(179, 136, 235, 0.55);
+      border: 1.5px solid transparent;
+    }
+
+    .cat-pill.inactive {
+      background: #FDF4F9;
+      color: #5E4374;
+      border: 1.5px solid #F3E5F5;
+    }
+
+    .cat-pill.inactive:hover {
+      background: #FCE4EC;
+      border-color: #F8BBD0;
+    }
+
+    /* =========================================================
+       SECTION CONTAINER & CARDS
+       ========================================================= */
+    .section-group {
+      background: #FFFBFD;
+      border: 1.5px solid #F3E5F5;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 14px -4px rgba(179, 136, 235, 0.1);
+      animation: tabFadeIn 0.24s ease-out;
+    }
+
+    @keyframes tabFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header-pink {
+      background: linear-gradient(90deg, #FFF0F6 0%, #F3E5F5 100%);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #FCE4EC;
+    }
+
+    .section-header-lavender {
+      background: linear-gradient(90deg, #F3E5F5 0%, #FFF0F6 100%);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #F3E5F5;
+    }
+
+    .template-card {
+      background: #ffffff;
+      border-radius: 15px;
+      border: 1.5px solid #F3E5F5;
+      padding: 7px;
+      box-shadow: 0 2px 8px rgba(179, 136, 235, 0.07);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .template-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(179, 136, 235, 0.14);
+      border-color: #CE93D8;
+    }
+
+    /* Compact Single-Line Buttons inside Cards */
+    .card-btn-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .btn-outline-demo,
+    .btn-fill-detail {
+      flex: 1 1 0%;
+      height: 28px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      text-decoration: none;
+    }
+
+    .btn-outline-demo {
+      background: #FFFBFD;
+      color: #6A4C82;
+      border: 1.5px solid #D1C4E9;
+    }
+
+    .btn-outline-demo:hover {
+      background: #FFF0F6;
+      border-color: #F48FB1;
+      color: #4A355B;
+    }
+
+    .btn-fill-detail {
+      background: linear-gradient(135deg, #B388EB 0%, #9575CD 100%);
+      color: #ffffff;
+      border: 1.5px solid transparent;
+      box-shadow: 0 2px 6px rgba(179, 136, 235, 0.35);
+    }
+
+    .btn-fill-detail:hover {
+      filter: brightness(1.05);
+    }
+
+    /* Mini Website Thumbnail Container (1:1 Square & Crisp) */
+    .mini-web-thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(179, 136, 235, 0.22);
+      cursor: pointer;
+      user-select: none;
+      display: block;
+      text-decoration: none;
+      background: #FFF8FB;
+    }
+
+    .mini-web-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    /* =========================================================
+       COURSE GALLERY 1:1 SQUARE SLIDES (Crisp & Horizontal Swipe)
+       ========================================================= */
+    .course-gallery-strip {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      padding: 4px 2px 10px 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .course-gallery-strip::-webkit-scrollbar {
+      height: 6px;
+    }
+    .course-gallery-strip::-webkit-scrollbar-track {
+      background: #FFF0F6;
+      border-radius: 9999px;
+    }
+    .course-gallery-strip::-webkit-scrollbar-thumb {
+      background: #CE93D8;
+      border-radius: 9999px;
+    }
+
+    .course-slide-card {
+      flex: 0 0 260px;
+      width: 260px;
+      scroll-snap-align: start;
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1.5px solid #F3E5F5;
+      padding: 8px;
+      box-shadow: 0 4px 12px -2px rgba(179, 136, 235, 0.14);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    @media (min-width: 640px) {
+      .course-slide-card {
+        flex: 0 0 300px;
+        width: 300px;
+      }
+    }
+
+    .course-slide-card:hover {
+      border-color: #CE93D8;
+      transform: translateY(-2px);
+    }
+
+    .course-square-img-wrap {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+      background: #FFF8FB;
+      border: 1px solid #FCE4EC;
+      cursor: pointer;
+    }
+
+    .course-square-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    .sparkle-anim {
+      animation: pulseSoft 2.6s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================= -->
+  <!-- MAIN PHONE / RESPONSIVE FRAME CONTAINER                   -->
+  <!-- ========================================================= -->
+  <div id="appWrapper" class="viewport-wrapper mode-phone">
+
+    <!-- 1. TOP FIXED AREA INSIDE PHONE (Status Bar + Header + Tabs) -->
+    <div class="shrink-0 bg-[#FFFBFD] z-20 px-3.5 pt-2.5 pb-2 border-b border-[#F8E8F2]">
+      <!-- Cute Pastel Status Bar with Real-Time Clock (Blue Circle Area) -->
+      <div id="iosStatusBar" class="px-1.5 pb-1.5 flex items-center justify-between text-[#5E4374] select-none">
+        <!-- Real-Time Clock Pill -->
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#FFF0F6] border border-[#F8BBD0] shadow-2xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#F48FB1] animate-pulse"></span>
+          <span class="text-[12px] font-bold tracking-tight text-[#6A4C82]" id="liveClock">--:--</span>
+        </div>
+
+        <!-- Cute Pastel Signal, Heart WiFi & Battery Pill -->
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F3E5F5]/90 border border-[#E1BEE7] shadow-2xs">
+          <!-- Cute Pastel Signal Dots -->
+          <div class="flex items-end gap-[2px] h-2.5" title="สัญญาณเต็ม">
+            <span class="w-[3px] h-1.5 rounded-full bg-[#CE93D8]"></span>
+            <span class="w-[3px] h-2 rounded-full bg-[#BA68C8]"></span>
+            <span class="w-[3px] h-2.5 rounded-full bg-[#9575CD]"></span>
+          </div>
+          <!-- Cute Heart Icon -->
+          <span class="text-[10px] leading-none text-[#EC4899]">♥</span>
+          <!-- Cute Pastel Battery with Heart Charge -->
+          <div class="flex items-center">
+            <div class="w-6 h-3 border-[1.5px] border-[#9575CD] bg-white rounded-full p-[1.5px] flex items-center">
+              <div class="bg-gradient-to-r from-[#F48FB1] to-[#B388EB] h-full w-[85%] rounded-full"></div>
+            </div>
+            <div class="w-[2px] h-1.5 bg-[#9575CD] rounded-r-full ml-[1px]"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header Bar: Custom Logo + "คอร์สสอนทำเว็บ" + Hamburger Menu -->
+      <header class="flex items-center justify-between py-1">
+        <div class="flex items-center gap-2 cursor-pointer" onclick="handleCategoryClick('course')">
+          <img
+            src="https://i.postimg.cc/SK0Ky425/mi-m-ch-x-55-20261107021652.png"
+            alt="โลโก้คอร์สสอนทำเว็บ"
+            class="w-9 h-9 object-contain rounded-xl shrink-0"
+            onerror="this.outerHTML='<span class=\'w-9 h-9 rounded-xl bg-[#FCE4EC] text-[#7E57C2] flex items-center justify-center font-bold text-xs\'>&lt;/&gt;</span>'"
+          />
+          <h1 class="text-[20px] sm:text-[22px] font-extrabold text-[#4A355B] tracking-tight leading-none">
+            คอร์สสอนทำเว็บ
+          </h1>
+        </div>
+
+        <button onclick="toggleDrawer(true)" aria-label="เปิดเมนู" class="p-2 rounded-xl hover:bg-[#FFF0F6] active:scale-95 transition text-[#6A4C82]">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Compact Hero Banner with Updated Image, Price Promo & Course Details -->
+      <section class="hero-card p-3 sm:p-3.5 mt-1.5">
+        <div class="hero-blob-1"></div>
+        <div class="hero-blob-2"></div>
+
+        <div class="relative z-10 flex items-center justify-between gap-2.5">
+          <div class="w-[65%] space-y-1">
+            <h2 class="text-[13.5px] sm:text-[15px] font-extrabold text-[#4A355B] leading-[1.3] tracking-tight">
+              เป็นเพียงตัวอย่างในการสอนเท่านั้น
+            </h2>
+            <!-- Course Price Promo Badge -->
+            <div class="inline-flex flex-wrap items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white/90 border border-[#F8BBD0] shadow-2xs">
+              <span class="px-2 py-0.5 rounded-full bg-gradient-to-r from-[#EC4899] to-[#B388EB] text-white text-[10px] sm:text-[11px] font-extrabold">
+                🔥 โปร 899.- (10 คนแรก)
+              </span>
+              <span class="text-[10.5px] sm:text-[11.5px] font-bold text-[#6A4C82]">
+                หลังจากนั้น <span class="underline decoration-[#F48FB1] decoration-2">1,290 บาท</span>
+              </span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] font-medium text-[#6A4C82] leading-[1.45]">
+              สามารถออกแบบหน้าเว็บเองตามความต้องการได้เลย สอนตั้งแต่เริ่ม ราคาคอร์สจ่ายครั้งเดียวไม่มีเก็บเพิ่ม ยกเว้นค่าเครื่องมือในการทำเว็บทั้งนี้จะเป็นคนละส่วนกับค่าคอร์ส มีคลิปสอนมีเอกสารควบคู่ ปรึกษาได้ตลอด
+            </p>
+          </div>
+
+          <div class="w-[35%] flex justify-end items-center relative">
+            <img
+              src="https://i.postimg.cc/28k2CH1T/IMG-7852.png"
+              alt="ภาพแบนเนอร์คอร์สสอนทำเว็บ"
+              class="w-full max-w-[118px] sm:max-w-[135px] h-auto object-contain drop-shadow-xs sparkle-anim rounded-xl"
+              onerror="this.src='https://placehold.co/240x180/FCE4EC/6A4C82?text=Web+Course'"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- 5 Category Tabs Strip (Added "เนื้อหาภายในคอร์ส" first, Removed "ตัวอย่างลูกเล่น") -->
+      <div class="mt-2.5 relative flex items-center gap-1">
+        <!-- Left Subtle Scroll Button -->
+        <button type="button" onclick="scrollTabsBy(-130)" aria-label="เลื่อนแท็บไปทางซ้าย" class="w-6 h-7 rounded-full bg-[#FDF4F9] border border-[#F3E5F5] text-[#7E57C2] flex items-center justify-center text-xs shrink-0 hover:bg-[#FCE4EC] active:scale-90 transition">
+          ‹
+        </button>
+
+        <!-- Horizontal Scrollable Pill Strip -->
+        <div id="tabsScrollStrip" class="tabs-scroll-strip flex-1">
+          <!-- 1. เนื้อหาภายในคอร์ส (First Tab) -->
+          <button id="pill-course" onclick="handleCategoryClick('course')" class="cat-pill active">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+            <span>เนื้อหาภายในคอร์ส</span>
+          </button>
+
+          <!-- 2. เว็บร้านค้า -->
+          <button id="pill-shop" onclick="handleCategoryClick('shop')" class="cat-pill inactive">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span>เว็บร้านค้า</span>
+          </button>
+
+          <!-- 3. เว็บเช็คคิว -->
+          <button id="pill-queue" onclick="handleCategoryClick('queue')" class="cat-pill inactive">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <rect x="3" y="4" width="18" height="18" rx="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+            <span>เว็บเช็คคิว</span>
+          </button>
+
+          <!-- 4. เว็บรีวิว -->
+          <button id="pill-review" onclick="handleCategoryClick('review')" class="cat-pill inactive">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+            </svg>
+            <span>เว็บรีวิว</span>
+          </button>
+
+          <!-- 5. เว็บบัญชี -->
+          <button id="pill-account" onclick="handleCategoryClick('account')" class="cat-pill inactive">
+            <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <rect x="2" y="5" width="20" height="14" rx="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20M6 15h4"/>
+            </svg>
+            <span>เว็บบัญชี</span>
+          </button>
+        </div>
+
+        <!-- Right Subtle Scroll Button -->
+        <button type="button" onclick="scrollTabsBy(130)" aria-label="เลื่อนแท็บไปทางขวา" class="w-6 h-7 rounded-full bg-[#FDF4F9] border border-[#F3E5F5] text-[#7E57C2] flex items-center justify-center text-xs shrink-0 hover:bg-[#FCE4EC] active:scale-90 transition">
+          ›
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. INTERNAL SCROLLABLE WORK SHOWCASE AREA -->
+    <main id="phoneScrollContainer" class="phone-scroll-area pt-2.5">
+      <div id="sectionsContainer">
+        <!-- Dynamically rendered active category cards -->
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- SLIDE-OVER DRAWER MENU (When clicking Hamburger ☰)        -->
+  <!-- ========================================================= -->
+  <div id="drawerOverlay" class="fixed inset-0 z-50 bg-[#4A355B]/35 backdrop-blur-xs hidden transition-opacity" onclick="toggleDrawer(false)">
+    <div class="absolute right-0 top-0 bottom-0 w-72 max-w-[85vw] bg-[#FFFBFD] shadow-2xl p-5 flex flex-col justify-between border-l border-[#F3E5F5]" onclick="event.stopPropagation()">
+      <div class="space-y-4">
+        <div class="flex items-center justify-between border-b border-[#F3E5F5] pb-3">
+          <div class="flex items-center gap-2">
+            <img
+              src="https://i.postimg.cc/SK0Ky425/mi-m-ch-x-55-20261107021652.png"
+              alt="โลโก้"
+              class="w-8 h-8 object-contain rounded-xl"
+              onerror="this.outerHTML='<span class=\'w-8 h-8 rounded-xl bg-[#FCE4EC] text-[#7E57C2] flex items-center justify-center font-bold\'>&lt;/&gt;</span>'"
+            />
+            <span class="font-bold text-[#4A355B] text-base">เลือกหมวดหมู่เว็บไซต์</span>
+          </div>
+          <button onclick="toggleDrawer(false)" class="p-1.5 rounded-lg hover:bg-[#FFF0F6] text-[#5E4374]">✕</button>
+        </div>
+
+        <!-- Navigation Links synced with the 5 Tabs -->
+        <nav class="space-y-1 text-sm font-medium">
+          <button onclick="handleCategoryClick('course'); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-[#FFF0F6] text-[#4A355B] flex items-center gap-2.5 transition">
+            <span>📚</span> 1. เนื้อหาภายในคอร์ส
+          </button>
+          <button onclick="handleCategoryClick('shop'); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-[#FFF0F6] text-[#4A355B] flex items-center gap-2.5 transition">
+            <span>🛍️</span> 2. เว็บร้านค้า
+          </button>
+          <button onclick="handleCategoryClick('queue'); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-[#FFF0F6] text-[#4A355B] flex items-center gap-2.5 transition">
+            <span>📅</span> 3. เว็บเช็คคิว
+          </button>
+          <button onclick="handleCategoryClick('review'); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-[#FFF0F6] text-[#4A355B] flex items-center gap-2.5 transition">
+            <span>⭐</span> 4. เว็บรีวิว
+          </button>
+          <button onclick="handleCategoryClick('account'); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl hover:bg-[#FFF0F6] text-[#4A355B] flex items-center gap-2.5 transition">
+            <span>💳</span> 5. เว็บบัญชี
+          </button>
+          <button onclick="openRulesModal(); toggleDrawer(false);" class="w-full text-left px-3.5 py-2.5 rounded-xl bg-[#FFF0F6] hover:bg-[#FCE4EC] text-[#7E57C2] font-bold flex items-center gap-2.5 transition mt-2 border border-[#F8BBD0]">
+            <span>📌</span> อ่านกฎภายในคอร์ส
+          </button>
+        </nav>
+      </div>
+
+      <div class="p-3.5 rounded-2xl bg-[#FFF0F6] border border-[#F8BBD0] text-xs text-[#5E4374] space-y-1">
+        <div class="font-bold text-[#4A355B]">💡 แนะนำการใช้งาน</div>
+        <p class="leading-relaxed text-[11.5px]">
+          เลือกแท็บด้านบนเพื่อดูเนื้อหาภายในคอร์สและตัวอย่างเว็บไซต์แต่ละหมวดหมู่ได้เลยค่ะ
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- WELCOME POPUP MODAL ("กฎภายในคอร์ส")                      -->
+  <!-- ========================================================= -->
+  <div id="rulesModal" class="fixed inset-0 z-50 bg-[#4A355B]/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5" onclick="closeRulesModal()">
+    <div class="bg-[#FFFBFD] w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border-2 border-[#F8BBD0] flex flex-col max-h-[88vh]" onclick="event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-[#FCE4EC] via-[#F3E5F5] to-[#EDE7F6] px-4 py-3.5 text-[#4A355B] flex items-center justify-between border-b border-[#F8BBD0]">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-white text-[#EC4899] flex items-center justify-center text-sm font-bold shadow-2xs">📢</span>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#4A355B]">
+            กฎภายในคอร์ส
+          </h3>
+        </div>
+        <button onclick="closeRulesModal()" class="w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#5E4374] flex items-center justify-center text-sm font-bold shadow-2xs">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-3 text-xs sm:text-sm text-[#5E4374]">
+        <div class="p-3.5 rounded-2xl bg-[#FFF0F6]/80 border border-[#F8BBD0] space-y-2 leading-relaxed">
+          <p class="font-bold text-[#4A355B] text-sm">🌸 ข้อตกลงและมารยาทการเรียนร่วมกัน</p>
+          <ul class="space-y-2 text-xs leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-[#EC4899] font-bold">1.</span>
+              <span><strong>ห้ามนำคลิปสอน เอกสาร และโค้ดเทมเพลตภายในคอร์ส</strong> ไปแจกจ่าย ส่งต่อ หรือนำไปขายต่อในทุกกรณี (อนุญาตให้นำไปดัดแปลงทำเว็บขายงานให้ลูกค้าของตัวเองได้ตามปกติ)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#EC4899] font-bold">2.</span>
+              <span><strong>เทมเพลตทุกชิ้นในคอร์ส</strong> สามารถนำไปดัดแปลงต่อยอด แก้ไขสี ข้อความ และเพิ่มลูกเล่นได้อิสระ แต่แนะนำให้ดัดแปลงอย่างเหมาะสม <strong>อย่าดัดแปลงจนโครงสร้างผิดรูปเกินไป</strong></span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#EC4899] font-bold">3.</span>
+              <span><strong>ค่าเรียนชำระครั้งเดียวไม่มีเก็บเพิ่ม</strong> (ยกเว้นค่าเครื่องมือหรือบริการเสริมภายนอกในการทำเว็บ ซึ่งจะแยกเป็นคนละส่วนกับค่าคอร์ส)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-[#EC4899] font-bold">4.</span>
+              <span><strong>ติดปัญหาตรงไหนสามารถทักสอบถามและปรึกษาได้ตลอด</strong> กรุณาส่งภาพหน้าจอหรืออธิบายจุดที่ติดขัดเพื่อความรวดเร็วในการช่วยเหลือ</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-4 py-3 bg-white border-t border-[#F3E5F5]">
+        <button onclick="closeRulesModal()" class="w-full py-2.5 px-4 rounded-full bg-gradient-to-r from-[#B388EB] to-[#F48FB1] text-white text-xs sm:text-sm font-bold shadow-sm hover:brightness-105 active:scale-98 transition">
+          รับทราบและเข้าสู่หน้าเว็บไซต์
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- DETAIL POPUP MODAL ("รายละเอียด")                        -->
+  <!-- ========================================================= -->
+  <div id="detailModal" class="fixed inset-0 z-50 bg-[#4A355B]/45 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-5" onclick="closeDetailModal()">
+    <div class="bg-[#FFFBFD] w-full max-w-md rounded-3xl overflow-hidden shadow-2xl border-2 border-[#E1BEE7] flex flex-col max-h-[88vh]" onclick="event.stopPropagation()">
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-[#F3E5F5] via-[#FCE4EC] to-[#FFF0F6] px-4 py-3 text-[#4A355B] flex items-center justify-between border-b border-[#F3E5F5]">
+        <div>
+          <span id="detailModalBadge" class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-white text-[#7E57C2] mb-0.5 shadow-2xs">
+            หมวดหมู่
+          </span>
+          <h3 id="detailModalTitle" class="text-base sm:text-lg font-extrabold leading-tight text-[#4A355B]">
+            ชื่อเทมเพลต
+          </h3>
+        </div>
+        <button onclick="closeDetailModal()" class="w-7 h-7 rounded-full bg-white/80 hover:bg-white text-[#5E4374] flex items-center justify-center text-sm font-bold shadow-2xs">
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-4 overflow-y-auto space-y-3 text-xs sm:text-sm text-[#5E4374]">
+        <div id="detailModalCover" class="rounded-2xl overflow-hidden border border-[#F3E5F5] shadow-xs">
+          <!-- Cover image rendered here -->
+        </div>
+
+        <div class="p-3 rounded-2xl bg-[#FFF0F6]/70 border border-[#FCE4EC] space-y-1">
+          <div id="detailModalHeadline" class="font-bold text-[#4A355B] text-sm">หัวข้อเทมเพลต</div>
+          <p id="detailModalDesc" class="text-xs leading-relaxed text-[#6A4C82]">คำอธิบายเทมเพลต</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <div class="font-bold text-[#4A355B] text-xs flex items-center gap-1.5">
+            <span>✨</span> ฟังก์ชันและจุดเด่นภายในเทมเพลต
+          </div>
+          <ul id="detailModalFeatures" class="space-y-1 text-xs text-[#5E4374] bg-white p-3 rounded-2xl border border-[#F3E5F5]">
+            <!-- Bullet points injected here -->
+          </ul>
+        </div>
+
+        <div class="p-2.5 rounded-xl bg-[#F3E5F5]/60 border border-[#E1BEE7] text-xs">
+          <span class="font-bold text-[#4A355B]">🎯 เหมาะสำหรับ: </span>
+          <span id="detailModalSuitable" class="text-[#6A4C82]">กลุ่มธุรกิจ</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="px-4 py-3 bg-white border-t border-[#F3E5F5] flex items-center gap-2">
+        <button onclick="closeDetailModal()" class="flex-1 py-2 px-3 rounded-full border-[1.5px] border-[#CE93D8] text-[#5E4374] text-xs font-bold hover:bg-[#FFF0F6] transition">
+          ปิดหน้าต่าง
+        </button>
+        <a id="detailModalPreviewLink" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 py-2 px-3 rounded-full bg-gradient-to-r from-[#B388EB] to-[#9575CD] text-white text-xs font-bold text-center shadow-sm hover:brightness-105 transition">
+          เปิดดูเว็บตัวอย่าง ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- FULLSCREEN IMAGE LIGHTBOX MODAL (สำหรับกดดูรูปเนื้อหาเต็มจอ) -->
+  <!-- ========================================================= -->
+  <div id="imageLightboxModal" class="fixed inset-0 z-50 bg-[#2D1E38]/85 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-6" onclick="closeImageLightbox()">
+    <div class="relative max-w-xl w-full flex flex-col items-center gap-3" onclick="event.stopPropagation()">
+      <!-- Top Controls -->
+      <div class="w-full flex items-center justify-between text-white px-1">
+        <span id="lightboxCounter" class="text-xs sm:text-sm font-bold bg-white/15 px-3 py-1 rounded-full backdrop-blur-xs">
+          รูปที่ 1 / 4
+        </span>
+        <button type="button" onclick="closeImageLightbox()" class="w-8 h-8 rounded-full bg-white text-[#4A355B] font-extrabold flex items-center justify-center shadow-md hover:bg-[#FCE4EC] transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Full Image Container with Prev/Next Buttons -->
+      <div class="relative w-full bg-white rounded-3xl p-2 shadow-2xl border-2 border-[#F8BBD0]">
+        <img id="lightboxFullImg" src="" alt="รูปเนื้อหาภายในคอร์สแบบเต็ม" class="w-full h-auto max-h-[75vh] object-contain rounded-2xl mx-auto" />
+
+        <!-- Prev Image Button -->
+        <button type="button" onclick="navigateLightbox(-1)" aria-label="รูปก่อนหน้า" class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 text-[#5E4374] border border-[#E1BEE7] shadow-md flex items-center justify-center font-extrabold text-base hover:bg-[#FFF0F6] active:scale-90 transition">
+          ‹
+        </button>
+
+        <!-- Next Image Button -->
+        <button type="button" onclick="navigateLightbox(1)" aria-label="รูปถัดไป" class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-white/95 text-[#5E4374] border border-[#E1BEE7] shadow-md flex items-center justify-center font-extrabold text-base hover:bg-[#FFF0F6] active:scale-90 transition">
+          ›
+        </button>
+      </div>
+
+      <p class="text-[11px] sm:text-xs text-white/90 text-center">
+        กดปุ่ม ‹ › เพื่อเลื่อนดูรูปถัดไป หรือแตะพื้นที่ว่างเพื่อปิด
+      </p>
+    </div>
+  </div>
+
+  <!-- ========================================================= -->
+  <!-- APPLICATION JAVASCRIPT                                    -->
+  <!-- ========================================================= -->
+  <script>
+    const COMMON_TEMPLATE_DESC = "เทมเพลตในเว็บสามารถดัดแปลงต่อยอดได้ เพิ่มลูกเล่นเองเพิ่มเติมได้อิสระ ดัดแปลงอย่าผิดรูปจนเกินไป";
+
+    // ===========================================================
+    // 1. รูปภาพเนื้อหาภายในคอร์ส (ขนาด 1:1 เลื่อนซ้าย-ขวา และกดดูเต็มได้)
+    // ===========================================================
+    const COURSE_IMAGES = [
+      {
+        url: "https://i.postimg.cc/FRwLLbpP/IMG-9205.png",
+        title: "เนื้อหาภายในคอร์ส 1"
+      },
+      {
+        url: "https://i.postimg.cc/XqFycZDq/IMG-9206.png",
+        title: "เนื้อหาภายในคอร์ส 2"
+      },
+      {
+        url: "https://i.postimg.cc/28RWjwVk/IMG-9207.png",
+        title: "เนื้อหาภายในคอร์ส 3"
+      },
+      {
+        url: "https://i.postimg.cc/4NgKRxSJ/IMG-9208.png",
+        title: "เนื้อหาภายในคอร์ส 4"
+      }
+    ];
+
+    let currentLightboxIndex = 0;
+
+    const TEMPLATES = [
+      // ---------------- 1. เว็บร้านค้า (shop) ----------------
+      {
+        id: "tpl-shop1",
+        category: "shop",
+        title: "Shop1",
+        bannerHeadline: "Shop1",
+        bannerSub: "เทมเพลตเว็บร้านค้าออนไลน์",
+        coverUrl: "https://i.postimg.cc/GpB19v5Y/mi-m-ch-x-57-20261120001305.png",
+        previewUrl: "https://shop1.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "หน้าแสดงรายการสินค้าพร้อมรูปภาพ ราคา และรายละเอียดชัดเจน",
+          "ระบบกดเลือกสินค้าใส่ตะกร้าและสรุปยอดสั่งซื้ออัตโนมัติ",
+          "ปุ่มกดสั่งซื้อเชื่อมต่อช่องทางติดต่อ/ส่งออเดอร์ได้ทันที",
+          "รองรับการแสดงผลเต็มจอทั้งมือถือ iPad และคอมพิวเตอร์"
+        ],
+        suitableFor: "ร้านค้าออนไลน์ทุกประเภท, ร้านขายขนม/สินค้าแฟชั่น และแม่ค้าออนไลน์ที่ต้องการหน้าร้านเป็นระเบียบ"
+      },
+
+      // ---------------- 2. เว็บเช็คคิว (queue) ----------------
+      {
+        id: "tpl-checkq",
+        category: "queue",
+        title: "Check Q",
+        bannerHeadline: "Check Q",
+        bannerSub: "ระบบเช็คคิวงานออนไลน์",
+        coverUrl: "https://i.postimg.cc/W3XmKJ2R/mi-m-ch-x-57-20261120001742.png",
+        previewUrl: "https://checkq.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "หน้าแสดงสถานะคิวงานปัจจุบัน แยกสถานะรอคิว / กำลังทำ / เสร็จสิ้นชัดเจน",
+          "ลูกค้าสามารถเข้ามาเช็กลำดับคิวของตัวเองได้ตลอด 24 ชั่วโมง",
+          "ป้ายแจ้งสถานะการเปิดรับคิว (เปิดรับคิว / คิวเต็ม) อัปเดตง่าย",
+          "ลดเวลาการตอบแชทซ้ำๆ และเพิ่มความเป็นมืออาชีพให้ร้าน"
+        ],
+        suitableFor: "ฟรีแลนซ์, งานคอมมิชชัน, ร้านรับออกแบบ และร้านรับทำสินค้าตามคิว"
+      },
+      {
+        id: "tpl-checkq2",
+        category: "queue",
+        title: "Check Q2",
+        bannerHeadline: "Check Q2",
+        bannerSub: "ระบบจองคิวและเช็ครอบว่าง",
+        coverUrl: "https://i.postimg.cc/Dzc1Jb41/mi-m-ch-x-57-20261120001825.png",
+        previewUrl: "https://checkq2.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "ตารางแสดงวันที่และช่วงเวลาว่างสำหรับจองคิวรับบริการ",
+          "แสดงรายละเอียดบริการและเงื่อนไขการจองคิวอย่างครบถ้วน",
+          "ระบบค้นหาหรือตรวจสอบข้อมูลคิวนัดหมายได้สะดวกรวดเร็ว",
+          "ออกแบบโทนสีละมุน อ่านง่าย สบายตาบนทุกขนาดหน้าจอ"
+        ],
+        suitableFor: "ร้านทำเล็บ, ร้านต่อขนตา, ซาลอน, คลินิก และธุรกิจที่ต้องนัดหมายรอบเวลา"
+      },
+
+      // ---------------- 3. เว็บรีวิว (review) ----------------
+      {
+        id: "tpl-review1",
+        category: "review",
+        title: "review",
+        bannerHeadline: "review",
+        bannerSub: "เทมเพลตเว็บรวมรีวิว",
+        coverUrl: "https://i.postimg.cc/nzymNK6w/mi-m-ch-x-57-20261120002319.png",
+        previewUrl: "https://review.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "การ์ดแสดงรีวิวพร้อมรูปภาพประกอบและคะแนนความพึงพอใจ",
+          "จัดเรียงหมวดหมู่รีวิวให้อ่านง่าย ค้นหารายการที่สนใจได้ไว",
+          "รองรับการใส่ข้อความคำอธิบายจุดเด่นและลิงก์พิกัดเพิ่มเติม",
+          "ช่วยสร้างความน่าเชื่อถือให้สินค้าและบริการของร้าน"
+        ],
+        suitableFor: "ร้านค้าออนไลน์ที่ต้องการรวมเครดิตรีวิวลูกค้า และเพจรีวิวแนะนำสินค้า/บริการ"
+      },
+      {
+        id: "tpl-review2",
+        category: "review",
+        title: "review 2",
+        bannerHeadline: "review 2",
+        bannerSub: "เทมเพลตเว็บรวมรีวิวสไตล์ที่ 2",
+        coverUrl: "https://i.postimg.cc/R0mDxKzR/mi-m-ch-x-57-20261120002708.png",
+        previewUrl: "https://review2.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "รูปแบบการจัดวางการ์ดรีวิวและแกลเลอรีภาพที่โดดเด่นน่าสนใจ",
+          "มีระบบแยกแท็ก/หมวดหมู่ของรีวิวแต่ละประเภทอย่างชัดเจน",
+          "ปุ่มกดดูรายละเอียดเพิ่มเติมหรือกดไปยังลิงก์พิกัดได้สะดวก",
+          "ปรับแต่งสี ฟอนต์ และภาพปกให้เข้ากับสไตล์ร้านได้ง่าย"
+        ],
+        suitableFor: "ครีเอเตอร์สายป้ายยา, บล็อกเกอร์รีวิว และร้านค้าที่ต้องการโชว์ผลงานและรีวิว"
+      },
+      {
+        id: "tpl-review3",
+        category: "review",
+        title: "review 3",
+        bannerHeadline: "review 3",
+        bannerSub: "เทมเพลตเว็บรวมรีวิวสไตล์ที่ 3",
+        coverUrl: "https://i.postimg.cc/Xv2mKqTY/mi-m-ch-x-57-20261120002746.png",
+        previewUrl: "https://review3.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "ดีไซน์หน้ารวมรีวิวและฟีดแบ็กแบบทันสมัย ดูสะอาดตา",
+          "แสดงคะแนนดาว สรุปจุดเด่น และคำแนะนำสำหรับผู้ที่สนใจ",
+          "รองรับการแสดงภาพรีวิวหลายรายการโดยไม่ทำให้หน้าเว็บหนัก",
+          "ใช้งานลื่นไหลทั้งบนมือถือ iPad และคอมพิวเตอร์"
+        ],
+        suitableFor: "ร้านอาหาร คาเฟ่ ร้านบิวตี้ และแบรนด์สินค้าที่ต้องการหน้าโชว์รีวิวคุณภาพ"
+      },
+
+      // ---------------- 4. เว็บบัญชี (account) ----------------
+      {
+        id: "tpl-payment1",
+        category: "account",
+        title: "payment",
+        bannerHeadline: "payment",
+        bannerSub: "เทมเพลตเว็บป้ายบัญชี & ชำระเงิน",
+        coverUrl: "https://i.postimg.cc/6qzvTs8M/mi-m-ch-x-57-20261120003231.png",
+        previewUrl: "https://payment.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "แสดงชื่อบัญชี เลขที่บัญชีธนาคาร และช่องทางรับชำระเงินชัดเจน",
+          "ปุ่มกดคัดลอกเลขบัญชีอัตโนมัติ ลดความผิดพลาดในการโอนเงิน",
+          "รองรับการแสดง QR Code สำหรับสแกนจ่ายเงินได้ทันที",
+          "ดีไซน์ป้ายบัญชีพาสเทลน่ารัก ดูน่าเชื่อถือและปลอดภัย"
+        ],
+        suitableFor: "ร้านค้าออนไลน์ทุกประเภท, แม่ค้าไลฟ์สด และฟรีแลนซ์ที่ต้องการลิงก์ป้ายบัญชีพร้อมใช้"
+      },
+      {
+        id: "tpl-payment2",
+        category: "account",
+        title: "payment 2",
+        bannerHeadline: "payment 2",
+        bannerSub: "เทมเพลตเว็บแจ้งโอน & ช่องทางชำระเงิน 2",
+        coverUrl: "https://i.postimg.cc/02WSssRS/mi-m-ch-x-57-20261120003344.png",
+        previewUrl: "https://payment2.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "รวมช่องทางการชำระเงินหลายบัญชีและวอลเล็ทไว้ในหน้าเดียว",
+          "มีปุ่มคัดลอกเลขบัญชีพร้อมแจ้งเตือนสถานะเมื่อกดคัดลอก",
+          "แสดงขั้นตอนการชำระเงินและการส่งหลักฐานสลิปอย่างชัดเจน",
+          "ปรับเปลี่ยนโลโก้ธนาคาร สีพื้นหลัง และข้อมูลร้านได้อิสระ"
+        ],
+        suitableFor: "ร้านค้าที่มีหลายช่องทางรับชำระเงิน และร้านที่ต้องการหน้าแจ้งโอนที่เป็นระเบียบ"
+      },
+      {
+        id: "tpl-payment3",
+        category: "account",
+        title: "payment 3",
+        bannerHeadline: "payment 3",
+        bannerSub: "เทมเพลตเว็บป้ายบัญชีสไตล์ที่ 3",
+        coverUrl: "https://i.postimg.cc/mrQhtxJG/mi-m-ch-x-57-20261120003429.png",
+        previewUrl: "https://payment3.norivelleex.workers.dev/",
+        description: COMMON_TEMPLATE_DESC,
+        features: [
+          "การ์ดแสดงข้อมูลบัญชีแบบมินิมอล อ่านเลขบัญชีและชื่อบัญชีง่าย",
+          "รองรับปุ่มคัดลอกเลขที่บัญชีและปุ่มลิงก์ส่งสลิปเข้าแชทร้าน",
+          "มีส่วนแจ้งเตือนให้ตรวจสอบชื่อบัญชีผู้รับก่อนกดโอนทุกครั้ง",
+          "แสดงผลสวยงามเต็มหน้าจอบนมือถือ iPad และคอมพิวเตอร์"
+        ],
+        suitableFor: "ร้านค้าออนไลน์, ร้านพรีออเดอร์ และผู้ให้บริการที่ต้องการหน้าชำระเงินดูดีมีเอกลักษณ์"
+      }
+    ];
+
+    // Ordered Category Metadata matching the 5 tabs
+    const CATEGORY_META = {
+      course: {
+        id: "course",
+        name: "เนื้อหาภายในคอร์ส",
+        headerClass: "section-header-pink",
+        iconSvg: `<svg class="w-5 h-5 text-[#8E69B8]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        </svg>`
+      },
+      shop: {
+        id: "shop",
+        name: "เว็บร้านค้า",
+        headerClass: "section-header-pink",
+        iconSvg: `<svg class="w-5 h-5 text-[#8E69B8]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>`
+      },
+      queue: {
+        id: "queue",
+        name: "เว็บเช็คคิว",
+        headerClass: "section-header-lavender",
+        iconSvg: `<svg class="w-5 h-5 text-[#8E69B8]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01"/>
+        </svg>`
+      },
+      review: {
+        id: "review",
+        name: "เว็บรีวิว",
+        headerClass: "section-header-pink",
+        iconSvg: `<svg class="w-5 h-5 text-[#8E69B8]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+        </svg>`
+      },
+      account: {
+        id: "account",
+        name: "เว็บบัญชี",
+        headerClass: "section-header-lavender",
+        iconSvg: `<svg class="w-5 h-5 text-[#8E69B8]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <rect x="2" y="5" width="20" height="14" rx="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2 10h20M6 15h4"/>
+        </svg>`
+      }
+    };
+
+    const ALL_TAB_KEYS = ["course", "shop", "queue", "review", "account"];
+
+    let appState = {
+      viewportMode: "responsive",   // Fullscreen responsive on all devices
+      activeCategoryTab: "course"   // Default to first tab: 'course'
+    };
+
+    // -----------------------------------------------------------
+    // 2. MINI-WEBSITE THUMBNAIL ARTWORK GENERATOR (1:1 Square Image)
+    // -----------------------------------------------------------
+    function renderMiniWebBanner(tpl) {
+      const titleText = escapeHtml(tpl.title || "");
+      const imgUrl = escapeHtml(tpl.coverUrl || "");
+
+      return `
+        <div class="mini-web-thumb bg-gradient-to-br from-[#FFF8FB] via-[#FFF0F6] to-[#F8F0FC]">
+          <img
+            src="${imgUrl}"
+            alt="${titleText}"
+            loading="eager"
+            decoding="sync"
+            onerror="this.src='https://placehold.co/600x600/FCE4EC/6A4C82?text=${encodeURIComponent(tpl.title)}'"
+          />
+        </div>
+      `;
+    }
+
+    // -----------------------------------------------------------
+    // 3. RENDER ACTIVE TAB CARDS (Separated per tab)
+    // -----------------------------------------------------------
+    function renderCustomerFrontend() {
+      // 1. Update Active Tab Pill Styling & Scroll active pill into view smoothly
+      ALL_TAB_KEYS.forEach(cat => {
+        const pill = document.getElementById(`pill-${cat}`);
+        if (!pill) return;
+        if (appState.activeCategoryTab === cat) {
+          pill.classList.remove("inactive");
+          pill.classList.add("active");
+          pill.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        } else {
+          pill.classList.remove("active");
+          pill.classList.add("inactive");
+        }
+      });
+
+      // 2. Render ONLY the selected tab's content
+      const container = document.getElementById("sectionsContainer");
+      const currentCatKey = appState.activeCategoryTab;
+      const meta = CATEGORY_META[currentCatKey];
+
+      if (currentCatKey === "course") {
+        const slidesHtml = COURSE_IMAGES.map((imgItem, idx) => `
+          <div class="course-slide-card">
+            <div class="course-square-img-wrap group" onclick="openImageLightbox(${idx})" title="คลิกเพื่อดูรูปเต็ม">
+              <img
+                src="${escapeHtml(imgItem.url)}"
+                alt="${escapeHtml(imgItem.title)}"
+                loading="eager"
+                decoding="sync"
+                class="transition duration-300 group-hover:scale-102"
+                onerror="this.src='https://placehold.co/800x800/FCE4EC/6A4C82?text=Course+${idx + 1}'"
+              />
+              <span class="absolute bottom-2 right-2 px-2.5 py-1 rounded-full bg-white/95 text-[#5E4374] text-[10px] font-bold shadow-xs border border-[#F3E5F5] flex items-center gap-1">
+                🔍 ดูรูปเต็ม
+              </span>
+            </div>
+            <div class="mt-2 px-1 flex items-center justify-between">
+              <span class="text-xs font-bold text-[#4A355B]">${escapeHtml(imgItem.title)}</span>
+              <span class="text-[10.5px] font-semibold text-[#8E69B8]">${idx + 1} / ${COURSE_IMAGES.length}</span>
+            </div>
+          </div>
+        `).join("");
+
+        container.innerHTML = `
+          <section id="section-course" class="section-group max-w-5xl mx-auto">
+            <div class="${meta.headerClass}">
+              <div class="flex items-center gap-2">
+                ${meta.iconSvg}
+                <h3 class="text-[16px] sm:text-[18px] font-extrabold text-[#4A355B] tracking-tight">
+                  ${meta.name}
+                </h3>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="scrollCourseGallery(-260)" aria-label="เลื่อนรูปซ้าย" class="w-7 h-7 rounded-full bg-white border border-[#E1BEE7] text-[#7E57C2] font-bold text-sm flex items-center justify-center hover:bg-[#FFF0F6] active:scale-90 transition">
+                  ‹
+                </button>
+                <button type="button" onclick="scrollCourseGallery(260)" aria-label="เลื่อนรูปขวา" class="w-7 h-7 rounded-full bg-white border border-[#E1BEE7] text-[#7E57C2] font-bold text-sm flex items-center justify-center hover:bg-[#FFF0F6] active:scale-90 transition">
+                  ›
+                </button>
+              </div>
+            </div>
+
+            <div class="p-3 sm:p-4 space-y-3">
+              <!-- Promo Price Highlight Box -->
+              <div class="p-3 rounded-2xl bg-gradient-to-r from-[#FFF0F6] via-[#FCE4EC] to-[#F3E5F5] border border-[#F8BBD0] flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <span class="px-2.5 py-1 rounded-full bg-gradient-to-r from-[#EC4899] to-[#B388EB] text-white text-xs font-extrabold shadow-2xs">
+                    โปร 899.- (10 คนแรก)
+                  </span>
+                  <span class="text-xs sm:text-sm font-bold text-[#4A355B]">
+                    หลังจากนั้นราคา <span class="text-[#EC4899] underline">1,290 บาท</span>
+                  </span>
+                </div>
+                <span class="text-[11px] font-semibold text-[#6A4C82]">
+                  👈 ปัดซ้าย-ขวา หรือแตะที่รูปเพื่อดูเต็มจอ 👉
+                </span>
+              </div>
+
+              <!-- 1:1 Horizontal Swipeable Gallery -->
+              <div id="courseGalleryStrip" class="course-gallery-strip">
+                ${slidesHtml}
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-white border border-[#F3E5F5] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                <div class="space-y-0.5">
+                  <div class="text-xs sm:text-sm font-extrabold text-[#4A355B]">✨ สิ่งที่นักเรียนจะได้รับทั้งหมด</div>
+                  <p class="text-[11.5px] text-[#6A4C82]">
+                    เรียนได้ทุกอุปกรณ์ • มีคลิปสอนละเอียด + เอกสารควบคู่ • ปรึกษาได้ตลอด • จ่ายครั้งเดียวไม่มีเก็บเพิ่ม
+                  </p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <button type="button" onclick="openRulesModal()" class="px-3 py-2 rounded-full border border-[#F8BBD0] bg-[#FFF0F6] text-[#EC4899] text-xs font-bold hover:bg-[#FCE4EC] transition">
+                    📢 กฎในคอร์ส
+                  </button>
+                  <button type="button" onclick="handleCategoryClick('shop')" class="px-4 py-2 rounded-full bg-gradient-to-r from-[#B388EB] to-[#9575CD] text-white text-xs font-bold shadow-xs hover:brightness-105 transition">
+                    ดูตัวอย่างเว็บ →
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+      } else {
+        const items = TEMPLATES.filter(t => t.category === currentCatKey);
+
+        const cardsHtml = items.map(tpl => `
+          <article class="template-card">
+            <div>
+              <!-- Clicking Thumbnail opens the direct previewUrl link -->
+              <a href="${escapeHtml(tpl.previewUrl)}" target="_blank" rel="noopener noreferrer" title="คลิกเพื่อเปิดดูตัวอย่างเว็บ ${escapeHtml(tpl.title)}">
+                ${renderMiniWebBanner(tpl)}
+              </a>
+
+              <!-- Single-line Card Title -->
+              <div class="mt-1.5 mb-1.5 px-0.5 flex items-center justify-between gap-1">
+                <h4 class="text-[14px] sm:text-[15px] font-bold text-[#4A355B] tracking-tight truncate">
+                  ${escapeHtml(tpl.title)}
+                </h4>
+              </div>
+            </div>
+
+            <!-- Cute Compact Single-Line Buttons: "ตัวอย่าง" (Link) & "รายละเอียด" (Popup) -->
+            <div class="card-btn-row">
+              <a href="${escapeHtml(tpl.previewUrl)}" target="_blank" rel="noopener noreferrer" class="btn-outline-demo">
+                ตัวอย่าง
+              </a>
+              <button type="button" onclick="openDetailModal('${tpl.id}')" class="btn-fill-detail">
+                รายละเอียด
+              </button>
+            </div>
+          </article>
+        `).join("");
+
+        container.innerHTML = `
+          <section id="section-${currentCatKey}" class="section-group max-w-5xl mx-auto">
+            <!-- Section Header Bar -->
+            <div class="${meta.headerClass}">
+              <div class="flex items-center gap-2">
+                ${meta.iconSvg}
+                <h3 class="text-[16px] sm:text-[18px] font-extrabold text-[#4A355B] tracking-tight">
+                  ${meta.name}
+                </h3>
+              </div>
+              <span class="text-[11px] font-semibold text-[#7E57C2] bg-white/80 px-2.5 py-0.5 rounded-full border border-[#E1BEE7]">
+                ${items.length} ตัวอย่าง
+              </span>
+            </div>
+
+            <!-- Responsive Card Grid: 2 cols on Mobile, 3 cols on iPad, 4 cols on PC -->
+            <div class="p-2.5 sm:p-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+              ${cardsHtml}
+            </div>
+          </section>
+        `;
+      }
+
+      // Reset internal scroll position to top when switching tabs
+      const scrollArea = document.getElementById("phoneScrollContainer");
+      if (scrollArea) {
+        scrollArea.scrollTop = 0;
+      }
+    }
+
+    // -----------------------------------------------------------
+    // 4. TAB BAR CONTROLS & INTERACTIONS
+    // -----------------------------------------------------------
+    function handleCategoryClick(catKey) {
+      if (!CATEGORY_META[catKey]) return;
+      appState.activeCategoryTab = catKey;
+      renderCustomerFrontend();
+    }
+
+    function scrollTabsBy(deltaX) {
+      const strip = document.getElementById("tabsScrollStrip");
+      if (strip) {
+        strip.scrollBy({ left: deltaX, behavior: "smooth" });
+      }
+    }
+
+    function scrollCourseGallery(deltaX) {
+      const gallery = document.getElementById("courseGalleryStrip");
+      if (gallery) {
+        gallery.scrollBy({ left: deltaX, behavior: "smooth" });
+      }
+    }
+
+    // -----------------------------------------------------------
+    // 5. IMAGE LIGHTBOX, RULES POPUP & DETAIL POPUP MODAL
+    // -----------------------------------------------------------
+    function openImageLightbox(index) {
+      if (!COURSE_IMAGES.length) return;
+      currentLightboxIndex = (index + COURSE_IMAGES.length) % COURSE_IMAGES.length;
+      const item = COURSE_IMAGES[currentLightboxIndex];
+      document.getElementById("lightboxFullImg").src = item.url;
+      document.getElementById("lightboxCounter").textContent = `${item.title} (${currentLightboxIndex + 1} / ${COURSE_IMAGES.length})`;
+      document.getElementById("imageLightboxModal").classList.remove("hidden");
+    }
+
+    function navigateLightbox(step) {
+      openImageLightbox(currentLightboxIndex + step);
+    }
+
+    function closeImageLightbox() {
+      document.getElementById("imageLightboxModal").classList.add("hidden");
+    }
+
+    function openRulesModal() {
+      document.getElementById("rulesModal").classList.remove("hidden");
+    }
+
+    function closeRulesModal() {
+      document.getElementById("rulesModal").classList.add("hidden");
+    }
+
+    function openDetailModal(templateId) {
+      const tpl = TEMPLATES.find(t => t.id === templateId);
+      if (!tpl) return;
+
+      const catMeta = CATEGORY_META[tpl.category];
+      document.getElementById("detailModalBadge").textContent = catMeta ? catMeta.name : "หมวดหมู่";
+      document.getElementById("detailModalTitle").textContent = tpl.title;
+      document.getElementById("detailModalCover").innerHTML = renderMiniWebBanner(tpl);
+      document.getElementById("detailModalHeadline").textContent = `${tpl.bannerHeadline} (${tpl.bannerSub})`;
+      document.getElementById("detailModalDesc").textContent = tpl.description;
+      document.getElementById("detailModalSuitable").textContent = tpl.suitableFor || "ใช้งานได้ทุกธุรกิจและปรับแต่งต่อยอดได้ทันที";
+
+      const featuresList = document.getElementById("detailModalFeatures");
+      featuresList.innerHTML = (tpl.features || []).map(f => `
+        <li class="flex items-start gap-2">
+          <span class="text-[#AB47BC] font-bold">✓</span>
+          <span>${escapeHtml(f)}</span>
+        </li>
+      `).join("");
+
+      const previewLink = document.getElementById("detailModalPreviewLink");
+      previewLink.href = tpl.previewUrl || "#";
+
+      document.getElementById("detailModal").classList.remove("hidden");
+    }
+
+    function closeDetailModal() {
+      document.getElementById("detailModal").classList.add("hidden");
+    }
+
+    // -----------------------------------------------------------
+    // 6. DRAWER MENU & UTILITIES
+    // -----------------------------------------------------------
+    function updateLiveClock() {
+      const clockEl = document.getElementById("liveClock");
+      if (!clockEl) return;
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      clockEl.textContent = `${hours}:${minutes}`;
+    }
+
+    function toggleDrawer(show) {
+      const el = document.getElementById("drawerOverlay");
+      if (show) {
+        el.classList.remove("hidden");
+      } else {
+        el.classList.add("hidden");
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Initialize Application
+    window.addEventListener("DOMContentLoaded", () => {
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
+      renderCustomerFrontend();
+      openRulesModal();
+    });
+  </script>
+</body>
+</html>
